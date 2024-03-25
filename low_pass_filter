@@ -1,0 +1,42 @@
+clear all , close all, clc
+imorj = imread('efes.jpeg');
+imorj = rgb2gray(imorj);
+
+im = im2double(imorj);
+[N M]=size(im);
+
+SNR = -15;
+SG = sum(sum(im.^2))/(N*M); %SINYAL GUCU
+sigma = SG./(10^(0.1*SNR));
+
+W = sqrt(sigma).*randn(N,M);
+A = plus(im,W);
+
+
+% 3x3 AGS
+filter_size = 3;
+h = fspecial('average', filter_size);
+A_3x3 = imfilter(A, h, 'replicate');
+
+% 5x5 AGS
+filter_size = 5;
+h = fspecial('average', filter_size);
+A_5x5 = imfilter(A, h, 'replicate');
+
+% 15x15 AGS
+filter_size = 15;
+h = fspecial('average', filter_size);
+A_15x15 = imfilter(A, h, 'replicate');
+
+% 30x30 AGS
+filter_size = 30;
+h = fspecial('average', filter_size);
+A_30x30 = imfilter(A, h, 'replicate');
+
+
+figure;
+  subplot(2,3,1); imshow(A); title('Gurultulu');
+  subplot(2,3,2); imshow(A_3x3); title('3x3');
+  subplot(2,3,3); imshow(A_5x5); title('5X5');
+  subplot(2,3,4); imshow(A_15x15); title('15X15');
+  subplot(2,3,5); imshow(A_30x30); title('30X30');
